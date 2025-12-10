@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pro Sell Rwanda – Vision 2050 B2C Marketplace</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+  <style>
+    :root {
+      --primary: #ff6a00;     /* Alibaba orange */
+      --dark: #1a1a1a;
+      --card: #ffffff;
+      --text: #333333;
+      --light: #f5f5f5;
+      --border: #eee;
+    }
+    * { margin:0; padding:0; box-sizing:border-box; font-family:'Roboto','Segoe UI',sans-serif; }
+    body {
+      background:#fafafa; color:var(--text); line-height:1.6;
+      background-image: url('https://img.alicdn.com/tfs/TB1Xe3wkYj1gK0jSZFOXXc7GpXa-2548-800.png');
+      background-attachment:fixed; background-size:cover;
+    }
+    header {
+      background:#fff; box-shadow:0 2px 10px rgba(0,0,0,0.08); position:sticky; top:0; z-index:1000;
+      padding:12px 40px; display:flex; justify-content:space-between; align-items:center;
+    }
+    .logo { font-size:2rem; font-weight:900; color:var(--primary); }
+    .logo span { color:#333; }
+    .search-bar {
+      flex:1; max-width:680px; margin:0 40px; position:relative;
+    }
+    #searchInput {
+      width:100%; padding:12px 20px; border:2px solid var(--primary); border-radius:4px; font-size:1rem;
+    }
+    .search-btn {
+      position:absolute; right:4px; top:4px; background:var(--primary); color:white;
+      border:none; padding:10px 24px; border-radius:4px; cursor:pointer;
+    }
+
+    .user-menu { display:flex; align-items:center; gap:20px; }
+    .user-menu a { color:#555; text-decoration:none; font-weight:500; }
+    .cart-icon { position:relative; font-size:1.5rem; }
+    .cart-count { position:absolute; top:-8px; right:-12px; background:var(--primary); color:white;
+      font-size:0.7rem; width:18px; height:18px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+
+    .categories-bar {
+      background:#fff; border-bottom:1px solid var(--border); padding:12px 40px; overflow-x:auto; white-space:nowrap;
+    }
+    .cat-btn {
+      display:inline-block; padding:10px 24px; margin-right:12px; background:transparent;
+      border:1px solid #ddd; border-radius:50px; cursor:pointer; transition:0.3s;
+    }
+    .cat-btn.active, .cat-btn:hover {
+      background:var(--primary); color:white; border-color:var(--primary);
+    }
+
+    .container { max-width:1400px; margin:20px auto; padding:0 20px; }
+    .products-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:20px; }
+    .product-card {
+      background:white; border:1px solid var(--border); border-radius:8px; overflow:hidden;
+      transition:box-shadow 0.3s; cursor:pointer;
+    }
+    .product-card:hover { box-shadow:0 8px 25px rgba(0,0,0,0.12); }
+    .product-img { width:100%; height:220px; object-fit:contain; background:#fafafa; padding:20px; }
+    .product-info { padding:15px; }
+    .price { color:var(--primary); font-size:1.5rem; font-weight:bold; }
+    .title { font-size:1rem; margin:8px 0; color:#333; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+    .seller { font-size:0.85rem; color:#888; }
+
+    .cart-sidebar {
+      position:fixed; top:0; right:-420px; width:420px; height:100%; background:white;
+      box-shadow:-4px 0 20px rgba(0,0,0,0.15); z-index:9999; transition:right 0.4s; padding:20px; overflow-y:auto;
+    }
+    .cart-sidebar.open { right:0; }
+    .cart-header { font-size:1.5rem; margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+    .close-cart { cursor:pointer; font-size:1.8rem; color:#999; }
+    .checkout-btn {
+      width:100%; background:var(--primary); color:white; padding:16px; font-size:1.3rem;
+      border:none; border-radius:8px; cursor:pointer; margin-top:20px; font-weight:bold;
+    }
+
+    .welcome-screen, .login-overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.92);
+      display:flex; align-items:center; justify-content:center; z-index:9999; flex-direction:column; gap:40px;
+    }
+    .role-card {
+      background:white; padding:40px; border-radius:12px; width:380px; text-align:center; cursor:pointer;
+      box-shadow:0 10px 30px rgba(0,0,0,0.2); transition:0.3s;
+    }
+    .role-card:hover { transform:translateY(-10px); }
+  </style>
+</head>
+<body>
+
+  <!-- Welcome Screen -->
+  <div id="welcomeScreen" class="welcome-screen">
+    <h1 style="font-size:4rem; color:#ff6a00;">MUZ1MA SELL RWANDA</h1>
+    <p style="font-size:1.4rem; color:#ddd;">MUZ1MA'S Marketplace 2025</p>
+    <div style="display:flex; gap:40px; flex-wrap:wrap; justify-content:center;">
+      <div class="role-card" onclick="showLogin('buyer')">
+        <h2>Shop as Buyer</h2>
+        <p>Browse millions of products<br>Pay securely with MTN MoMo</p>
+      </div>
+      <div class="role-card" onclick="showLogin('seller')">
+        <h2>Sell on Kikku Pro</h2>
+        <p>Reach thousands of customers<br>Manage orders & grow your business</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Login Overlay -->
+  <div id="loginOverlay" class="login-overlay" style="display:none;">
+    <div style="background:white; padding:40px; border-radius:12px; width:400px;">
+      <h2 id="loginTitle" style="color:#ff6a00; text-align:center; margin-bottom:20px;">Buyer Login</h2>
+      <input type="text" id="loginPhone" placeholder="Phone number (078/072/073)" style="width:100%; padding:14px; margin:10px 0; border:1px solid #ddd; border-radius:6px;">
+      <input type="password" id="loginPass" placeholder="Password" style="width:100%; padding:14px; margin:10px 0; border:1px solid #ddd; border-radius:6px;">
+      <button onclick="login()" style="width:100%; background:#ff6a00; color:white; padding:14px; border:none; border-radius:6px; font-size:1.1rem; cursor:pointer;">Log In</button>
+      <p style="text-align:center; margin-top:20px;">
+        Don't have an account? <a onclick="register()" style="color:#ff6a00; cursor:pointer; font-weight:bold;">Sign Up</a>
+      </p>
+    </div>
+  </div>
+
+  <!-- Main App -->
+  <div id="app" style="display:none;">
+
+    <header>
+      <div class="logo">KIKKU <span>PRO</span></div>
+      <div class="search-bar">
+        <input type="text" id="searchInput" placeholder="Search for products, brands and more..." onkeyup="applyFilters()">
+        <button class="search-btn"><i class="fas fa-search"></i></button>
+      </div>
+      <div class="user-menu">
+        <a href="#" id="userName">Hello, Guest</a>
+        <a href="#" onclick="logout()">Sign Out</a>
+        <div class="cart-icon" onclick="toggleCart()">
+          <i class="fas fa-shopping-cart"></i>
+          <span id="cartCount" class="cart-count">0</span>
+        </div>
+      </div>
+    </header>
+
+    <div class="categories-bar">
+      <button class="cat-btn active" onclick="setCategory('all')">All Categories</button>
+      <button class="cat-btn" onclick="setCategory('imodoka')">Vehicles</button>
+      <button class="cat-btn" onclick="setCategory('telefoni')">Phones & Tablets</button>
+      <button class="cat-btn" onclick="setCategory('inzu')">Real Estate</button>
+      <button class="cat-btn" onclick="setCategory('mudasobwa')">Laptops & Computers</button>
+      <button class="cat-btn" onclick="setCategory('ibikoresho')">Electronics</button>
+      <button class="cat-btn" onclick="setCategory('ubuhinzi')">Agriculture</button>
+    </div>
+
+    <div class="container">
+      <div id="buyerView">
+        <div class="products-grid" id="postsContainer"></div>
+      </div>
+    </div>
+
+    <!-- Cart Sidebar -->
+    <div id="cartSidebar" class="cart-sidebar">
+      <div class="cart-header">
+        <span>My Cart (<span id="cartItemsCount">0</span> items)</span>
+        <i class="fas fa-arrow-right close-cart" onclick="toggleCart()"></i>
+      </div>
+      <div id="cartItems"></div>
+      <div style="margin-top:20px; padding-top:20px; border-top:1px solid #eee;">
+        <div style="font-size:1.4rem; font-weight:bold; text-align:right;">
+          Total: <span id="totalPrice" style="color:#ff6a00;">0 RWF</span>
+        </div>
+        <button class="checkout-btn" onclick="openMoMoPayment()">
+          <img src="https://mtn.co.rw/wp-content/uploads/2023/06/MoMo-Logo-Yellow.png" alt="MoMo" style="height:32px; margin-right:10px;">
+          Proceed to Pay with MTN MoMo
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let currentUser = null, cart = [], currentCategory = "all";
+    let allProducts = JSON.parse(localStorage.getItem("kikkuProducts")) || [
+      {id:1,title:"Toyota Prado TX.L 2024",price:98000000,img:"download (1).jpg",category:"imodoka",seller:"Luxury Cars Rwanda"},
+      {id:2,title:"iPhone 16 Pro Max 1TB – Desert Titanium",price:2450000,img:"https://images.unsplash.com/photo-1609520183849-4b2cbd7f6e15?w=800",category:"telefoni",seller:"TechShop Rwanda"},
+      {id:3,title:"Luxury Villa in Nyarutarama – 5 Bedrooms",price:520000000,img:"https://images.unsplash.com/photo-1576941089067-2de3c901608a?w=800",category:"inzu",seller:"Imari Estate"},
+      {id:4,title:"MacBook Pro M3 Max 48GB RAM 1TB SSD",price:6800000,img:"https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=800",category:"mudasobwa",seller:"Kigali Tech Store"},
+      {id:5,title:"DJI Mini 4 Pro Drone with Remote",price:1450000,img:"https://images.unsplash.com/photo-1507582020474-2c2739c8a7e7?w=800",category:"ibikoresho",seller:"Gadget Pro Rwanda"}
+    ];
+
+    function showLogin(role){
+      currentRole = role;
+      document.getElementById("welcomeScreen").style.display = "none";
+      document.getElementById("loginOverlay").style.display = "flex";
+      document.getElementById("loginTitle").textContent = role === "buyer" ? "Buyer Login" : "Seller Login";
+    }
+
+    function register(){
+      const name = prompt("Full Name:");
+      const phone = prompt("Phone Number (078/072/073):");
+      const pass = prompt("Create Password:");
+      if(name && phone && pass && /^07[238]/.test(phone)){
+        const users = JSON.parse(localStorage.getItem("kikkuUsers")||"[]");
+        users.push({name,phone,password:btoa(pass),role:currentRole,
+          avatar:`https://api.dicebear.com/7.x/avataaars/svg?seed=${name}`});
+        localStorage.setItem("kikkuUsers",JSON.stringify(users));
+        alert("Account created successfully!");
+      }
+    }
+
+    function login(){
+      const phone = document.getElementById("loginPhone").value.trim();
+      const pass = document.getElementById("loginPass").value;
+      const users = JSON.parse(localStorage.getItem("kikkuUsers")||"[]");
+      const user = users.find(u=>u.phone===phone && atob(u.password)===pass);
+      if(!user) return alert("Invalid phone number or password!");
+
+      currentUser = user;
+      document.getElementById("loginOverlay").style.display="none";
+      document.getElementById("app").style.display="block";
+      document.getElementById("userName").textContent = "Hello, " + user.name.split(" ")[0];
+      renderProducts();
+      updateCart();
+    }
+
+    function logout(){ if(confirm("Are you sure you want to log out?")) location.reload(); }
+
+    function setCategory(cat){
+      document.querySelectorAll('.cat-btn').forEach(b=>b.classList.remove('active'));
+      event.target.classList.add('active');
+      currentCategory = cat;
+      applyFilters();
+    }
+
+    function applyFilters(){
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      let filtered = allProducts;
+      if(currentCategory !== "all") filtered = filtered.filter(p=>p.category===currentCategory);
+      if(search) filtered = filtered.filter(p=>p.title.toLowerCase().includes(search) || p.seller.toLowerCase().includes(search));
+      renderProducts(filtered);
+    }
+
+    function renderProducts(list = allProducts){
+      document.getElementById("postsContainer").innerHTML = list.map(p=>`
+        <div class="product-card" onclick="addToCart(${p.id})">
+          <img src="${p.img}" class="product-img">
+          <div class="product-info">
+            <div class="price">${p.price.toLocaleString()} RWF</div>
+            <div class="title">${p.title}</div>
+            <div class="seller">by ${p.seller}</div>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function addToCart(id){
+      const item = allProducts.find(p=>p.id===id);
+      cart.push(item);
+      updateCart();
+      document.getElementById("cartCount").textContent = cart.length;
+      document.getElementById("cartItemsCount").textContent = cart.length;
+      alert(`${item.title} added to cart!`);
+    }
+
+    function toggleCart(){
+      document.getElementById("cartSidebar").classList.toggle("open");
+    }
+
+    function updateCart(){
+      document.getElementById("cartItems").innerHTML = cart.map((c,i)=>`
+        <div style="display:flex; gap:15px; padding:15px 0; border-bottom:1px solid #eee;">
+          <img src="${c.img}" style="width:70px; height:70px; object-fit:cover; border-radius:8px;">
+          <div style="flex:1;">
+            <div style="font-weight:500;">${c.title.substring(0,50)}...</div>
+            <div style="color:#ff6a00; font-weight:bold;">${c.price.toLocaleString()} RWF</div>
+          </div>
+          <button onclick="cart.splice(${i},1);updateCart();document.getElementById('cartCount').textContent=cart.length;" 
+                  style="background:#ff4d4d; color:white; border:none; padding:6px 10px; border-radius:6px;">Remove</button>
+        </div>
+      `).join('') || "<p style='text-align:center; color:#999; padding:40px;'>Your cart is empty</p>";
+
+      const total = cart.reduce((s,p)=>s+p.price,0);
+      document.getElementById("totalPrice").textContent = total.toLocaleString() + " RWF";
+    }
+
+    function openMoMoPayment(){
+      if(cart.length===0) return alert("Your cart is empty!");
+      const total = cart.reduce((s,p)=>s+p.price,0);
+      if(confirm(`Confirm payment of ${total.toLocaleString()} RWF via MTN MoMo?`)){
+        alert("Order placed successfully! You will receive a payment request on " + currentUser.phone);
+        cart = [];
+        updateCart();
+        document.getElementById("cartCount").textContent = "0";
+        toggleCart();
+      }
+    }
+
+    // Initial load
+    renderProducts();
+  </script>
+</body>
+</html>
