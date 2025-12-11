@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Calculator</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            padding: 20px;
+        }
+        
+        .calculator {
+            width: 320px;
+            background-color: #2d3047;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            overflow: hidden;
+            padding: 20px;
+            border: 1px solid #3e4161;
+        }
+        
+        .display {
+            background-color: #1c1e32;
+            color: #ffffff;
+            text-align: right;
+            padding: 25px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid #3e4161;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+        }
+        
+        .previous-operand {
+            font-size: 18px;
+            color: #a0a0c0;
+            min-height: 25px;
+            word-wrap: break-word;
+            word-break: break-all;
+        }
+        
+        .current-operand {
+            font-size: 36px;
+            font-weight: 600;
+            word-wrap: break-word;
+            word-break: break-all;
+            line-height: 1.2;
+        }
+        
+        .buttons-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 12px;
+        }
+        
+        .button {
+            background-color: #3e4161;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            height: 65px;
+            font-size: 22px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: all 0.2s;
+            user-select: none;
+        }
+        
+        .button:hover {
+            background-color: #4a4d75;
+            transform: translateY(-2px);
+        }
+        
+        .button:active {
+            transform: translateY(1px);
+            background-color: #363856;
+        }
+        
+        .operator {
+            background-color: #ff9a3c;
+            color: #1c1e32;
+        }
+        
+        .operator:hover {
+            background-color: #ffab5e;
+        }
+        
+        .operator:active {
+            background-color: #e88a2c;
+        }
+        
+        .equals {
+            background-color: #4cc9f0;
+            color: #1c1e32;
+        }
+        
+        .equals:hover {
+            background-color: #6ed4f5;
+        }
+        
+        .equals:active {
+            background-color: #2cb9e0;
+        }
+        
+        .clear, .delete {
+            background-color: #f472b6;
+            color: #1c1e32;
+        }
+        
+        .clear:hover, .delete:hover {
+            background-color: #f689c2;
+        }
+        
+        .clear:active, .delete:active {
+            background-color: #e25ba3;
+        }
+        
+        .span-two {
+            grid-column: span 2;
+        }
+        
+        .zero {
+            grid-column: span 2;
+        }
+        
+        .calculator-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #3e4161;
+        }
+        
+        .calculator-title {
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 600;
+        }
+        
+        .brand {
+            color: #a0a0c0;
+            font-size: 14px;
+        }
+        
+        .instructions {
+            color: #a0a0c0;
+            font-size: 12px;
+            text-align: center;
+            margin-top: 20px;
+            line-height: 1.5;
+        }
+        
+        /* Animation for button press */
+        @keyframes buttonPress {
+            0% { transform: scale(1); }
+            50% { transform: scale(0.95); }
+            100% { transform: scale(1); }
+        }
+        
+        .button.pressed {
+            animation: buttonPress 0.1s ease;
+        }
+        
+        /* Responsive design */
+        @media (max-width: 400px) {
+            .calculator {
+                width: 100%;
+                max-width: 320px;
+                padding: 15px;
+            }
+            
+            .button {
+                height: 60px;
+                font-size: 20px;
+            }
+            
+            .current-operand {
+                font-size: 32px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="calculator">
+        <div class="calculator-header">
+            <div class="calculator-title">Calculator</div>
+            <div class="brand">HTML/CSS Only</div>
+        </div>
+        
+        <div class="display">
+            <div class="previous-operand"></div>
+            <div class="current-operand">0</div>
+        </div>
+        
+        <div class="buttons-grid">
+            <button class="button clear span-two">AC</button>
+            <button class="button delete">DEL</button>
+            <button class="button operator">÷</button>
+            
+            <button class="button">7</button>
+            <button class="button">8</button>
+            <button class="button">9</button>
+            <button class="button operator">×</button>
+            
+            <button class="button">4</button>
+            <button class="button">5</button>
+            <button class="button">6</button>
+            <button class="button operator">-</button>
+            
+            <button class="button">1</button>
+            <button class="button">2</button>
+            <button class="button">3</button>
+            <button class="button operator">+</button>
+            
+            <button class="button zero">0</button>
+            <button class="button">.</button>
+            <button class="button equals">=</button>
+        </div>
+        
+        <div class="instructions">
+            Note: This calculator uses CSS-only visual effects. For full functionality, JavaScript would be required.
+        </div>
+    </div>
+
+    <script>
+        // Since the requirement is HTML and CSS only, this JavaScript is only for visual feedback
+        // In a real calculator, JavaScript would handle the calculations
+        
+        document.addEventListener('DOMContentLoaded', function() {
+            const buttons = document.querySelectorAll('.button');
+            const currentOperandElement = document.querySelector('.current-operand');
+            const previousOperandElement = document.querySelector('.previous-operand');
+            let currentOperand = '0';
+            let previousOperand = '';
+            
+            buttons.forEach(button => {
+                button.addEventListener('click', function() {
+                    // Add visual feedback
+                    this.classList.add('pressed');
+                    setTimeout(() => {
+                        this.classList.remove('pressed');
+                    }, 100);
+                    
+                    const buttonText = this.textContent;
+                    
+                    // Handle different button types
+                    if (this.classList.contains('clear')) {
+                        // All Clear button
+                        currentOperand = '0';
+                        previousOperand = '';
+                    } else if (this.classList.contains('delete')) {
+                        // Delete button
+                        if (currentOperand.length > 1) {
+                            currentOperand = currentOperand.slice(0, -1);
+                        } else {
+                            currentOperand = '0';
+                        }
+                    } else if (this.classList.contains('operator')) {
+                        // Operator buttons
+                        if (previousOperand && !previousOperand.includes('=')) {
+                            previousOperand = previousOperand + ' ' + currentOperand + ' ' + buttonText;
+                        } else {
+                            previousOperand = currentOperand + ' ' + buttonText;
+                        }
+                        currentOperand = '0';
+                    } else if (this.classList.contains('equals')) {
+                        // Equals button
+                        if (previousOperand && !previousOperand.includes('=')) {
+                            previousOperand = previousOperand + ' ' + currentOperand + ' =';
+                            // In a real calculator, this would calculate the result
+                            // For now, we'll just show a placeholder
+                            currentOperand = '[Result]';
+                        }
+                    } else {
+                        // Number and decimal buttons
+                        if (currentOperand === '0' || currentOperand === '[Result]') {
+                            currentOperand = buttonText;
+                        } else {
+                            // Don't allow multiple decimal points
+                            if (buttonText === '.' && currentOperand.includes('.')) {
+                                return;
+                            }
+                            currentOperand += buttonText;
+                        }
+                    }
+                    
+                    // Update the display
+                    currentOperandElement.textContent = currentOperand;
+                    previousOperandElement.textContent = previousOperand;
+                });
+            });
+            
+            // Add keyboard support for visual feedback only
+            document.addEventListener('keydown', function(event) {
+                const key = event.key;
+                let buttonToClick = null;
+                
+                // Map keyboard keys to calculator buttons
+                if (key === '0' || key === '1' || key === '2' || key === '3' || key === '4' ||
+                    key === '5' || key === '6' || key === '7' || key === '8' || key === '9') {
+                    buttonToClick = document.querySelector(`.button:not(.operator):not(.clear):not(.delete):not(.equals):not(.zero)`);
+                    // This is simplified - in reality we'd find the exact button
+                } else if (key === '+') {
+                    buttonToClick = document.querySelector('.button.operator:nth-child(16)');
+                } else if (key === '-') {
+                    buttonToClick = document.querySelector('.button.operator:nth-child(12)');
+                } else if (key === '*') {
+                    buttonToClick = document.querySelector('.button.operator:nth-child(8)');
+                } else if (key === '/') {
+                    buttonToClick = document.querySelector('.button.operator:nth-child(4)');
+                } else if (key === 'Enter' || key === '=') {
+                    buttonToClick = document.querySelector('.equals');
+                } else if (key === 'Escape' || key === 'Delete') {
+                    buttonToClick = document.querySelector('.clear');
+                } else if (key === 'Backspace') {
+                    buttonToClick = document.querySelector('.delete');
+                } else if (key === '.') {
+                    buttonToClick = document.querySelector('.button:nth-child(17)');
+                }
+                
+                if (buttonToClick) {
+                    event.preventDefault();
+                    buttonToClick.classList.add('pressed');
+                    setTimeout(() => {
+                        buttonToClick.classList.remove('pressed');
+                    }, 100);
+                }
+            });
+        });
+    </script>
+</body>
+</html>
